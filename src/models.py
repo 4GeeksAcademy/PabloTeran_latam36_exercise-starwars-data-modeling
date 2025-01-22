@@ -7,28 +7,24 @@ from eralchemy2 import render_er
 
 Base = declarative_base()
 
-# Association table for the many-to-many relationship between User and Favorite
 user_favorite = Table(
     'user_favorite', Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
     Column('favorite_id', Integer, ForeignKey('favorites.id'), primary_key=True)
 )
 
-# Association table for the many-to-many relationship between User and Planet
 user_planet = Table(
     'user_planet', Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
     Column('planet_id', Integer, ForeignKey('planets.id'), primary_key=True)
 )
 
-# Association table for the many-to-many relationship between User and Character
 user_character = Table(
     'user_character', Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
     Column('character_id', Integer, ForeignKey('characters.id'), primary_key=True)
 )
 
-# Association table for the many-to-many relationship between User and Spaceship
 user_spaceship = Table(
     'user_spaceship', Base.metadata,
     Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
@@ -44,7 +40,6 @@ class User(Base):
     last_name = Column(String(100), nullable=False)
     subscription_date = Column(DateTime, nullable=False)
 
-    # Relationships
     favorites = relationship("Favorite", secondary=user_favorite, back_populates="users")
     favorite_planets = relationship("Planet", secondary=user_planet, back_populates="users")
     favorite_characters = relationship("Character", secondary=user_character, back_populates="users")
@@ -56,7 +51,6 @@ class Favorite(Base):
     type = Column(String(50), nullable=False)  # "planet", "character", or "spaceship"
     name = Column(String(200), nullable=False)
 
-    # Relationships
     users = relationship("User", secondary=user_favorite, back_populates="favorites")
 
 class Planet(Base):
@@ -67,7 +61,6 @@ class Planet(Base):
     terrain = Column(String(100), nullable=False)
     population = Column(Integer)
 
-    # Relationships
     users = relationship("User", secondary=user_planet, back_populates="favorite_planets")
 
 class Character(Base):
@@ -78,7 +71,6 @@ class Character(Base):
     birth_year = Column(String(50))
     height = Column(String(50))
 
-    # Relationships
     users = relationship("User", secondary=user_character, back_populates="favorite_characters")
 
 class Spaceship(Base):
@@ -89,10 +81,9 @@ class Spaceship(Base):
     manufacturer = Column(String(100))
     capacity = Column(Integer)
 
-    # Relationships
     users = relationship("User", secondary=user_spaceship, back_populates="favorite_spaceships")
 
-## Draw from SQLAlchemy base
+## SQLAlchemy base
 try:
     result = render_er(Base, 'diagram.png')
     print("Success! Check the diagram.png file")
